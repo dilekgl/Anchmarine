@@ -1,17 +1,10 @@
-import express from 'express';
-import nodemailer from 'nodemailer';
-import cors from 'cors';
-import dotenv from 'dotenv';
+import nodemailer from "nodemailer";
 
-dotenv.config();
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).send("Method Not Allowed");
+  }
 
-const app = express();
-const PORT = 5000;
-
-app.use(cors());
-app.use(express.json());
-
-app.post("/send", async (req, res) => {
   const { name, email, message } = req.body;
 
   const transporter = nodemailer.createTransport({
@@ -41,9 +34,4 @@ app.post("/send", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Gönderim hatası." });
   }
-});
-
-app.listen(PORT, () => {
-  console.log(`Sunucu çalışıyor: http://localhost:${PORT}`);
-  console.log("MAIL_USER:", process.env.MAIL_USER ? "******" : "Yok");
-});
+}
